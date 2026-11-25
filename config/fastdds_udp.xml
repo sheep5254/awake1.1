@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  Fast DDS 调优配置（本机用）
+  背景：激光点云（PointCloud2）单帧几百 KB～几 MB，Fast DDS 默认 UDP 收发缓冲只有
+  几十 KB，容易丢包，表现为「话题发布了但某些节点收不到」（point_lio 拿不到点云、
+  slam 拿不到 scan 等）。
+  这里把 UDP 收发缓冲放大到 16MB，并作为默认 participant profile 自动生效。
+-->
+<profiles xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles">
+  <transport_descriptors>
+    <transport_descriptor>
+      <transport_id>udp_transport_large</transport_id>
+      <type>UDPv4</type>
+      <sendBufferSize>16777216</sendBufferSize>
+      <receiveBufferSize>16777216</receiveBufferSize>
+      <maxMessageSize>65000</maxMessageSize>
+    </transport_descriptor>
+  </transport_descriptors>
+
+  <participant profile_name="large_udp_participant" is_default_profile="true">
+    <rtps>
+      <userTransports>
+        <transport_id>udp_transport_large</transport_id>
+      </userTransports>
+      <useBuiltinTransports>false</useBuiltinTransports>
+    </rtps>
+  </participant>
+</profiles>
